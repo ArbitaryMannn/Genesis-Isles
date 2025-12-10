@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earth: God View</title>
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'FantasyRPG';
+      src: url('./RPG%20UI%20pack%20-%20Demo%20(by%20Franuka)/FantasyRPGtext%20(size%208).ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+    }
+    :root {
+      --bg: #0f1418;
+      --panel: #161d23;
+      --panel-2: #1d2630;
+      --accent: #58c4ff;
+      --accent-2: #ffc857;
+      --good: #7dff8b;
+      --bad: #ff7b7b;
+      --text: #e8f1ff;
+    }
+    :root {
+      --cursor-knight: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path fill='%23d0d7e2' d='M4 2l10 6-3 3 3 3-2 2-3-3-3 3z'/><path fill='%2399a6bb' d='M17 11l3-3 8 12-3 3z'/><path fill='%23f4f6fb' d='M14 20l2-2 5 5-2 2z'/></svg>") 0 0, auto;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', 'FantasyRPG', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(88,196,255,0.08), transparent 30%),
+                  radial-gradient(circle at 80% 10%, rgba(255,200,87,0.08), transparent 35%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      padding: 0;
+      cursor: var(--cursor-knight);
+    }
+    canvas#world { cursor: var(--cursor-knight); }
+    .shell {
+      display: grid;
+      grid-template-columns: 1fr minmax(200px, 240px);
+      gap: 8px;
+      width: 100vw;
+      max-width: 1900px;
+      height: 100vh;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    canvas {
+      background: #0b0f12;
+      border: 1px solid #24303c;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.45);
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      justify-self: center;
+      display: block;
+    }
+    .panel {
+      background: linear-gradient(180deg, rgba(22,29,35,0.9), rgba(12,16,22,0.92));
+      border: 1px solid #1f2a33;
+      border-radius: 14px;
+      padding: 10px;
+      box-shadow: 0 12px 38px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 10px;
+      align-content: start;
+      max-height: calc(100vh - 12px);
+      overflow-y: auto;
+    }
+    h1 {
+      margin: 0;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      font-weight: 600;
+      color: #c7d3e7;
+    }
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pill {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(88,196,255,0.12);
+      border: 1px solid rgba(88,196,255,0.25);
+      color: #a8c6e8;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      background: var(--panel-2);
+      border: 1px solid #24303c;
+      border-radius: 10px;
+      padding: 6px;
+    }
+    button {
+      border: 1px solid #38475a;
+      background: linear-gradient(180deg, rgba(120,150,200,0.14), rgba(40,55,80,0.6)), var(--panel-2);
+      color: var(--text);
+      padding: 6px 7px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    button:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1); }
+    button.active { border-color: var(--accent-2); color: var(--accent-2); box-shadow: 0 0 0 2px rgba(255,200,87,0.3); }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 8px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(120,150,200,0.08), rgba(20,30,45,0.8));
+      font-weight: 700;
+      border: 1px solid #24303c;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      font-size: 12px;
+    }
+    .bar {
+      height: 8px;
+      background: #10161c;
+      border: 1px solid #24303c;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 6px;
+      width: 100%;
+    }
+    .bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      width: 40%;
+      transition: width 0.2s ease;
+    }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0; }
+    .row label { font-size: 13px; color: #a9b4c0; }
+    input[type="range"] { width: 100%; }
+    .legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 2px;
+      font-size: 11px;
+      color: #8ea2b5;
+    }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 10px; background: var(--panel-2); border: 1px solid #24303c; }
+    .icon {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.35));
+    }
+    .icon-male { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='4' r='3' fill='%236bc46d'/%3E%3Cpath d='M8 7c-2.5 0-3.5 1.8-3.5 4.5V15h7v-3.5C11.5 8.8 10.5 7 8 7Z' fill='%236bc46d'/%3E%3C/svg%3E"); }
+    .icon-female { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='8' cy='4' r='3' fill='%23ff8fc6'/%3E%3Cpath d='M8 7c-2.5 0-3.5 1.9-3.5 4.5V15h2v-2h3v2h2v-3.5C11.5 8.9 10.5 7 8 7Z' fill='%23ff8fc6'/%3E%3C/svg%3E"); }
+    .icon-fruit { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 2c-.6 0-1.1.3-1.4.8L5.5 4.5l1.3.5C8 5.2 9 5.6 9.7 6.1c.7.6 1.3 1.5 1.3 2.7 0 2.4-1.5 4.2-3.7 4.2S3.5 11.2 3.5 8.8c0-1.5.7-2.6 1.8-3.3l1.5-.9L6.8 3 8 2Z' fill='%23ffd369' stroke='%23d8b23c' stroke-width='.5'/%3E%3C/svg%3E"); }
+    .icon-hut { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 8 8 3l6 5v6H2V8Z' fill='%236f8faf' stroke='%234c6c8f'/%3E%3Cpath d='M6 12h4v2H6z' fill='%23d8e6ff'/%3E%3C/svg%3E"); }
+    .icon-forest { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 11.5 8 2l5 9.5H9.5L11 14H5l1.5-2.5H3Z' fill='%23456f4d' stroke='%23305534'/%3E%3Crect x='7' y='11' width='2' height='4' fill='%23392820'/%3E%3C/svg%3E"); }
+    .icon-water { background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 9c1 .8 2 .8 3 0 1-.8 2-.8 3 0 1 .8 2 .8 3 0' fill='none' stroke='%233b5b75' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M3 12c1 .8 2 .8 3 0 1-.8 2-.8 3 0 1 .8 2 .8 3 0' fill='none' stroke='%233b5b75' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); }
+    .log {
+      margin-top: 6px;
+      max-height: 120px;
+      overflow: auto;
+      font-size: 11px;
+      line-height: 1.3;
+      padding-right: 4px;
+      background: rgba(20,26,32,0.6);
+      border: 1px solid #202a33;
+      border-radius: 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .log-entry { padding: 4px 6px; border-bottom: 1px solid #1f2932; }
+    .speed-buttons { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 8px; }
+    .speed-buttons button { padding: 6px 8px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <canvas id="world" width="960" height="960" style="grid-row:1 / 2;"></canvas>
+    <div class="panel" style="grid-row:1 / 2; overflow:hidden;">
+      <div class="topline">
+        <h1>Earth • God View</h1>
+        <span class="pill" id="date">Y1 M1 D1</span>
+      </div>
+
+      <div class="toolbar">
+        <button id="toggle">Pause</button>
+        <button id="musicToggle">Music</button>
+        <button id="downloadBook">Book</button>
+        <button data-speed="0.6">Slow</button>
+        <button data-speed="1">Normal</button>
+        <button data-speed="1.4">Fast</button>
+        <label style="grid-column: 1 / -1; display:flex; align-items:center; gap:6px; font-size:12px; color:#a9b4c0;">
+          Speed
+          <input id="speed" type="range" min="0.5" max="1.5" step="0.1" value="1" style="flex:1">
+        </label>
+      </div>
+
+      <div class="controls">
+        <button data-tool="rain">Rain</button>
+        <button data-tool="snow">Snow</button>
+        <button data-tool="quake">Quake</button>
+        <button data-tool="fire">Lightning</button>
+        <button data-tool="bless">Bless</button>
+        <button data-tool="campfire">Campfire</button>
+        <button data-tool="plague">Virus</button>
+        <button data-tool="prophet">Prophet</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><span>Population</span><span id="pop">0</span></div>
+        <div class="stat"><span>Buildings</span><span id="huts">0</span></div>
+        <div class="stat"><span>Gold</span><span id="gold">50</span></div>
+        <div class="stat"><span>Era</span><span id="era">Tribe</span></div>
+      </div>
+      <div class="bar"><span id="progress"></span></div>
+      <div class="legend">
+        <div class="chip"><span class="icon icon-male"></span>Adam</div>
+        <div class="chip"><span class="icon icon-female"></span>Eve</div>
+        <div class="chip"><span class="icon icon-fruit"></span>Fruit</div>
+        <div class="chip"><span class="icon icon-hut"></span>Hut</div>
+        <div class="chip"><span class="icon icon-forest"></span>Forest</div>
+        <div class="chip"><span class="icon icon-water"></span>Water</div>
+      </div>
+      <div class="log" id="log" style="overflow-y:auto; scrollbar-width: thin; scroll-behavior: smooth;"></div>
+      <div class="log" id="deathLog" aria-label="Ölümler" style="overflow-y:auto; scrollbar-width: thin; scroll-behavior: smooth;"></div>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const c = document.getElementById('world');
+      const shell = document.querySelector('.shell');
+      const setSize = () => {
+        const rect = c.getBoundingClientRect();
+        const availableHeight = shell ? shell.clientHeight : window.innerHeight;
+        const sizeCss = Math.max(360, Math.floor(Math.min(rect.width, availableHeight - 6)));
+        const dpr = window.devicePixelRatio || 1;
+        c.style.width = `${sizeCss}px`;
+        c.style.height = `${sizeCss}px`;
+        c.width = Math.floor(sizeCss * dpr);
+        c.height = Math.floor(sizeCss * dpr);
+      };
+      setSize();
+      window.addEventListener('resize', setSize);
+    })();
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
