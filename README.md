@@ -75,8 +75,8 @@ A lightweight browser-based god simulation. Start with Adam and Eve in a small w
 ---
 
 ## Profile / İletişim
-- GitHub: https://github.com/YOUR_USERNAME
-- LinkedIn: https://www.linkedin.com/in/YOUR_LINKEDIN
-- Email: your.email@example.com
+- GitHub: [https://github.com/YOUR_USERNAME](https://github.com/ArbitaryMannn)
+- LinkedIn: [https://www.linkedin.com/in/YOUR_LINKEDIN](https://www.linkedin.com/in/ali-yabuz-6b11a33a0/)
+- Email: aliyabuz30@gmail.com
 
-Update `YOUR_USERNAME` and links with your details. If GitHub profile README, place this in a repo named `<username>/<username>` so it renders on your profile. 
+
